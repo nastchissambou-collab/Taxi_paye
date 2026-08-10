@@ -1,0 +1,252 @@
+:root {
+    --bg: #f4f7fb;
+    --panel: #ffffff;
+    --primary: #14532d;
+    --primary-dark: #0f3c21;
+    --accent: #f59e0b;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --danger: #b91c1c;
+    --success: #166534;
+    --border: #dbe3ed;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.topbar {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    padding: 18px;
+    border-radius: 16px;
+    margin-bottom: 16px;
+}
+
+.topnav {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.topnav a {
+    color: #fff;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.12);
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 14px;
+}
+
+.eyebrow {
+    margin: 0 0 4px;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+h1, h2 {
+    margin: 0;
+}
+
+.actions-grid {
+    display: grid;
+    gap: 14px;
+}
+
+.action-card {
+    display: block;
+    text-decoration: none;
+    color: var(--text);
+    background: var(--panel);
+    padding: 18px;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.action-card strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--primary-dark);
+}
+
+.action-card small {
+    color: var(--muted);
+}
+
+.action-icon {
+    font-size: 24px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+.panel {
+    background: var(--panel);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.form-grid {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+label {
+    display: grid;
+    gap: 6px;
+    font-weight: bold;
+    color: var(--text);
+}
+
+input,
+select,
+button {
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    font-size: 16px;
+}
+
+input:focus,
+select:focus {
+    outline: 2px solid rgba(20, 83, 45, 0.2);
+    border-color: var(--primary);
+}
+
+button {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 4px;
+}
+
+button:hover {
+    background: var(--primary-dark);
+}
+
+.alert {
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
+
+.alert p {
+    margin: 0;
+}
+
+.alert.success {
+    background: rgba(22, 101, 52, 0.12);
+    color: var(--success);
+}
+
+.alert.error {
+    background: rgba(185, 28, 28, 0.1);
+    color: var(--danger);
+}
+
+.summary-panel {
+    margin-top: 16px;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+}
+
+.summary-card {
+    background: #eef6f0;
+    padding: 14px;
+    border-radius: 12px;
+}
+
+.summary-card small {
+    display: block;
+    color: var(--muted);
+    margin-bottom: 4px;
+}
+
+.summary-card strong {
+    font-size: 20px;
+    color: var(--primary-dark);
+}
+
+.summary-card.accent {
+    background: #fff8e8;
+}
+
+.info-chip {
+    background: #eef6f0;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 12px;
+    color: var(--primary-dark);
+}
+
+.table-wrap {
+    overflow-x: auto;
+    margin-top: 12px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+th,
+td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+}
+
+th {
+    background: #eef4f1;
+}
+
+@media (min-width: 800px) {
+    .actions-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .layout {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .form-grid button {
+        grid-column: 1 / -1;
+    }
+}
