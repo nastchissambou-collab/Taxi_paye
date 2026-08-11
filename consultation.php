@@ -10,6 +10,7 @@ $nextYear = $selectedMois == 12 ? $selectedAnnee + 1 : $selectedAnnee;
 $periodStart = date('Y-m-d', mktime(0, 0, 0, $selectedMois, 5, $selectedAnnee));
 $periodEnd = date('Y-m-d', mktime(0, 0, 0, $nextMonth, 4, $nextYear));
 $periodPayment = date('Y-m-d', mktime(0, 0, 0, $nextMonth, 5, $nextYear));
+$exportUrl = 'export_csv.php?annee=' . urlencode((string)$selectedAnnee) . '&mois=' . urlencode((string)$selectedMois);
 
 $chauffeursResult = $conn->query('SELECT id, nom, prenom FROM chauffeur ORDER BY id ASC LIMIT 1');
 $chauffeur = $chauffeursResult ? $chauffeursResult->fetch_assoc() : null;
@@ -53,6 +54,10 @@ if ($chauffeur) {
     $summary['net'] = $totalEntries - $totalExpenses;
     $summary['salary'] = round($totalEntries * 0.25, 2);
 }
+
+$comparisonDelta = $summary['entries'] - $summary['expenses'];
+$comparisonLabel = $comparisonDelta >= 0 ? 'Excédent' : 'Déficit';
+$comparisonPercent = $summary['expenses'] > 0 ? round(($comparisonDelta / $summary['expenses']) * 100, 1) : 0;
 
 $months = [
     1 => 'Janvier', 2 => 'Février', 3 => 'Mars', 4 => 'Avril', 5 => 'Mai', 6 => 'Juin',
@@ -106,7 +111,14 @@ $months = [
         </section>
 
         <section class="panel summary-panel">
-            <h2>Période  : du <?= htmlspecialchars($periodStart, ENT_QUOTES, 'UTF-8') ?> au <?= htmlspecialchars($periodEnd, ENT_QUOTES, 'UTF-8') ?></h2>
+            <div class="section-head">
+                <h2>Période : du <?= htmlspecialchars($periodStart, ENT_QUOTES, 'UTF-8') ?> au <?= htmlspecialchars($periodEnd, ENT_QUOTES, 'UTF-8') ?></h2>
+                <div class="action-row">
+                    <a class="btn secondary" href="<?= htmlspecialchars($exportUrl, ENT_QUOTES, 'UTF-8') ?>">Exporter CSV</a>
+                    <button type="button" class="btn secondary" onclick="window.print()">Imprimer le résumé</button>
+                </div>
+            </div>
+            <div class="info-chip">Paiement prévu le <?= htmlspecialchars($periodPayment, ENT_QUOTES, 'UTF-8') ?></div>
             <div class="summary-grid">
                 <div class="summary-card">
                     <small>Total entrées</small>
@@ -125,7 +137,10 @@ $months = [
                     <strong><?= number_format($summary['salary'], 2, ',', ' ') ?></strong>
                 </div>
             </div>
-
+            <div class="comparison-box">
+                <strong><?= htmlspecialchars($comparisonLabel, ENT_QUOTES, 'UTF-8') ?> : <?= number_format(abs($comparisonDelta), 2, ',', ' ') ?> <?= $comparisonDelta >= 0 ? 'd’entrées en surplus' : 'de dépenses en excès' ?></strong>
+                <p>Comparaison entrées / dépenses : <?= number_format($comparisonPercent, 1, ',', ' ') ?>% <?= $comparisonDelta >= 0 ? 'de marge' : 'de dépassement' ?></p>
+            </div>
         </section>
 
         <section class="panel summary-panel">
