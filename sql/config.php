@@ -1,15 +1,14 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "taxi_paye";
-$port = 3307; // IMPORTANT
+$host = 'localhost';
+$user = 'root';
+$pass = '';
+$dbname = 'taxi_paye';
+$port = 3307;
 
-$conn = new mysqli($servername, $username, $password, $dbname, $port);
+$conn = new mysqli($host, $user, $pass, $dbname, $port);
 
-// Vérification connexion
 if ($conn->connect_error) {
-    die("Connexion échouée : " . $conn->connect_error);
+    die('Connexion impossible à la base de données : ' . $conn->connect_error);
 }
 
-?>
+$conn->set_charset('utf8mb4');

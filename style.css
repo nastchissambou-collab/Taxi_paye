@@ -298,26 +298,3 @@ th {
     }
 }
 
-@media print {
-    body {
-        background: #fff;
-    }
-
-    .topnav,
-    .action-row,
-    .form-grid button,
-    .btn {
-        display: none !important;
-    }
-
-    .container {
-        max-width: 100%;
-        padding: 0;
-    }
-
-    .panel,
-    .topbar {
-        box-shadow: none;
-        border: 1px solid #ddd;
-    }
-}

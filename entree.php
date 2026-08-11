@@ -1,33 +1,35 @@
 <?php
 require __DIR__ . '/sql/config.php';
 
-$successMessages = [];
-$errorMessages = [];
+$message = '';
+$error = '';
+
+$chauffeurResult = $conn->query('SELECT id, prenom FROM chauffeur ORDER BY id ASC LIMIT 1');
+$chauffeur = $chauffeurResult ? $chauffeurResult->fetch_assoc() : null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $chauffeurId = 0;
-    $chauffeurSingle = $conn->query('SELECT id FROM chauffeur ORDER BY id ASC LIMIT 1');
-    if ($chauffeurSingle && $chauffeurSingle->num_rows > 0) {
-        $chauffeurData = $chauffeurSingle->fetch_assoc();
-        $chauffeurId = (int)$chauffeurData['id'];
-    }
-
-    $dateEntree = trim($_POST['date_entree'] ?? '');
-    $montant = (float)($_POST['montant'] ?? 0);
-
-    if ($chauffeurId <= 0 || $dateEntree === '' || $montant <= 0) {
-        $errorMessages[] = 'Créez d’abord un chauffeur puis saisissez une date et un montant valide.';
+    if (!$chauffeur) {
+        $error = 'Aucun chauffeur n’est encore enregistré.';
     } else {
-        $stmt = $conn->prepare('INSERT INTO entree_journaliere (chauffeur_id, date_entree, montant) VALUES (?, ?, ?)');
-        $stmt->bind_param('isd', $chauffeurId, $dateEntree, $montant);
-        if ($stmt->execute()) {
-            $successMessages[] = 'Entrée journalière enregistrée avec succès.';
+        $dateEntree = $_POST['date_entree'] ?? date('Y-m-d');
+        $montant = (float)($_POST['montant'] ?? 0);
+
+        if ($montant <= 0) {
+            $error = 'Le montant doit être supérieur à 0.';
         } else {
-            $errorMessages[] = 'Erreur lors de l’enregistrement : ' . $stmt->error;
+            $stmt = $conn->prepare('INSERT INTO entree_journaliere (chauffeur_id, date_entree, montant) VALUES (?, ?, ?)');
+            $stmt->bind_param('iss', $chauffeur['id'], $dateEntree, $montant);
+            if ($stmt->execute()) {
+                $message = 'Entrée enregistrée avec succès.';
+            } else {
+                $error = 'Erreur lors de l’enregistrement de l’entrée.';
+            }
+            $stmt->close();
         }
-        $stmt->close();
     }
 }
+
+$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -41,8 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container">
         <header class="topbar">
             <div>
-                <p class="eyebrow">Accueil</p>
-                <h1>Entrée journalière</h1>
+                <p class="eyebrow">Entrée</p>
+                <h1>Enregistrer une entrée</h1>
             </div>
             <nav class="topnav">
                 <a href="index.php">Accueil</a>
@@ -50,38 +52,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </nav>
         </header>
 
-        <?php if (!empty($successMessages)): ?>
-            <div class="alert success">
-                <?php foreach ($successMessages as $msg): ?>
-                    <p><?= htmlspecialchars($msg, ENT_QUOTES, 'UTF-8') ?></p>
-                <?php endforeach; ?>
-            </div>
+        <?php if ($message !== ''): ?>
+            <div class="alert success"><p><?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?></p></div>
         <?php endif; ?>
-
-        <?php if (!empty($errorMessages)): ?>
-            <div class="alert error">
-                <?php foreach ($errorMessages as $msg): ?>
-                    <p><?= htmlspecialchars($msg, ENT_QUOTES, 'UTF-8') ?></p>
-                <?php endforeach; ?>
-            </div>
+        <?php if ($error !== ''): ?>
+            <div class="alert error"><p><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p></div>
         <?php endif; ?>
 
         <section class="panel">
+            <h2>Nouvelle entrée</h2>
             <form method="post" class="form-grid">
-                <label>
-                    Date
-                    <input type="date" name="date_entree" required>
+                <label>Date
+                    <input type="date" name="date_entree" value="<?= date('Y-m-d') ?>" required>
                 </label>
-                <label>
-                    Montant
-                    <input type="number" name="montant" step="0.01" min="0" placeholder="Ex. 15000" required>
+                <label>Montant
+                    <input type="number" step="0.01" name="montant" required>
                 </label>
-                <button type="submit">Enregistrer l’entrée</button>
+                <button type="submit">Enregistrer</button>
             </form>
         </section>
     </div>
 </body>
 </html>
-<?php
-$conn->close();
-?>
