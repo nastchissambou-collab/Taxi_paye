@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dateEntree = trim($_POST['date_entree'] ?? '');
     $montant = (float)($_POST['montant'] ?? 0);
 
-    if ($chauffeurId <= 0 || $dateEntree === '' || $montant <= 0) {
+    if ($chauffeurId <= 0 || $dateEntree === '' || $montant < 0) {
         $errorMessages[] = 'Créez d’abord un chauffeur puis saisissez une date et un montant valide.';
     } else {
         $stmt = $conn->prepare('INSERT INTO entree_journaliere (chauffeur_id, date_entree, montant) VALUES (?, ?, ?)');
